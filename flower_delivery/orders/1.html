@@ -1,0 +1,16 @@
+<!-- orders/templates/orders/product_list.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flower Catalog</title>
+</head>
+<body>
+    <h1>Flower Catalog</h1>
+    <ul>
+        {% for product in products %}
+            <li>{{ product.name }} - ${{ product.price }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
