@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import SignUpForm
 from .models import Product
+import json
 
 def product_list(request):
     products = Product.objects.all()
@@ -32,3 +33,10 @@ def login_view(request):
     else:
         form = AuthenticationForm()
     return render(request, 'orders/login.html', {'form': form})
+
+def checkout(request):
+    if request.method == 'POST':
+        cart_data = json.loads(request.POST['cart_data'])
+        total_price = sum(int(item['price']) * item['quantity'] for item in cart_data.values())
+        return render(request, 'checkout.html', {'cart_data': cart_data, 'total_price': total_price})
+    return redirect('catalog')

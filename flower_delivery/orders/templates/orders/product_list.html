@@ -47,10 +47,8 @@
             var cartItem = document.createElement('li');
             cartItem.textContent = productName + ' - $' + productPrice;
 
-            // Создаем кнопку для удаления
             var removeButton = document.createElement('button');
-            removeButton.textContent = 'Убрать';
-            removeButton.className = 'btn btn-danger btn-sm ml-2';
+            removeButton.textContent = 'Удалить';
             removeButton.onclick = function() {
                 cartList.removeChild(cartItem);
                 updateTotalPrice(-productPrice);
@@ -58,6 +56,7 @@
                 if (cartItems[productName] === 0) {
                     delete cartItems[productName];
                 }
+                updateCartForm(); // Обновляем форму после удаления элемента
             };
 
             // Добавляем кнопку к элементу корзины
@@ -105,51 +104,44 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="my-4">Каталог цветов</h1>
-
-        <!-- Добавляем контейнер для каталога -->
-        <div class="catalog">
-            <div class="catalog-item">
-                <img src="https://i.pinimg.com/originals/b1/05/6e/b1056eaf60fd9397925e1e7334c5531b.jpg" alt="Букет цветов" class="img-fluid">
-                <div class="button-container">
-                    <button class="btn btn-primary mt-2" onclick="addToCart('Букет 1', 100)">Выбрать</button>
-                </div>
-            </div>
-
-            <div class="catalog-item">
-                <img src="https://king-flower.ru/images/flowers2020/IMG_0717.jpg" alt="Букет цветов" class="img-fluid">
-                <div class="button-container">
-                    <button class="btn btn-primary mt-2" onclick="addToCart('Букет 2', 120)">Выбрать</button>
-                </div>
-            </div>
-
-            <div class="catalog-item">
-                <img src="https://xn--76-vlci2a3g.xn--p1ai/upload/image/miks_sezonnyh_tsvetov_2500r_(2).,.png" alt="Букет цветов" class="img-fluid">
-                <div class="button-container">
-                    <button class="btn btn-primary mt-2" onclick="addToCart('Букет 3', 150)">Выбрать</button>
-                </div>
-            </div>
-        </div>
-
+        <h1>Каталог цветов</h1>
         <div class="auth-links">
-            {% if user.is_authenticated%}
+            {% if user.is_authenticated %}
                 <p>Welcome, {{ user.username }}! <a href="{% url 'logout' %}">Logout</a></p>
             {% else %}
                 <p><a href="{% url 'login' %}">Вход</a> | <a href="{% url 'signup' %}">Регистрация</a></p>
             {% endif %}
         </div>
 
-        <ul>
-            {% for product in products %}
-                <li>{{ product.name }} - ${{ product.price }}</li>
-            {% endfor %}
-        </ul>
-
-        <!-- Корзина -->
-        <div class="cart">
+        <div class="catalog">
+            <!-- Первый товар -->
+            <div class="catalog-item">
+                <img src="https://i.pinimg.com/originals/b1/05/6e/b1056eaf60fd9397925e1e7334c5531b.jpg" alt="Flower 1">
+                <h3>Букет 1</h3>
+                <div class="button-container">
+                    <button class="btn btn-primary" onclick="addToCart('Flower 1', 10)">Добавить в корзину</button>
+                </div>
+            </div>
+            <!-- Второй товар -->
+            <div class="catalog-item">
+                <img src="https://king-flower.ru/images/flowers2020/IMG_0717.jpg" alt="Flower 2">
+                <h3>Букет 2</h3>
+                <div class="button-container">
+                    <button class="btn btn-primary" onclick="addToCart('Flower 2', 15)">Добавить в корзину</button>
+                </div>
+            </div>
+            <!-- Третий товар -->
+            <div class="catalog-item">
+                <img src="https://xn--76-vlci2a3g.xn--p1ai/upload/image/miks_sezonnyh_tsvetov_2500r_(2).,.png" alt="Flower 3">
+                <h3>Букет  3</h3>
+                <div class="button-container">
+                    <button class="btn btn-primary" onclick="addToCart('Flower 3', 20)">Добавить в корзину</button>
+                </div>
+            </div>
+        </div><div class="cart">
             <h2>Корзина</h2>
             <ul id="cart-list">
-                <!-- Здесь будут добавляться выбранные товары -->
+                <!-- Элементы корзины будут добавляться сюда с помощью JavaScript -->
             </ul>
             <p id="total-price">Общая сумма: $0</p>
             <button class="btn btn-warning mt-2" onclick="clearCart()">Убрать все заказы</button>
@@ -159,10 +151,5 @@
             </form>
         </div>
     </div>
-
-    <!-- Подключение Bootstrap JS и Popper.js -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
