@@ -61,7 +61,8 @@
             };
 
             // Добавляем кнопку к элементу корзины
-            cartItem.appendChild(removeButton);// Добавляемэлемент корзины в список
+            cartItem.appendChild(removeButton);
+            // Добавляем элемент корзины в список
             cartList.appendChild(cartItem);
 
             // Обновляем количество товара в корзине
@@ -150,7 +151,7 @@
             <p id="total-price">Общая сумма: $0</p>
             <button class="btn btn-warning mt-2" onclick="clearCart()">Убрать все заказы</button>
             <button class="btn btn-info mt-2" onclick="showOrderDetails()">Оформить заказ</button>
-            <form id="cart-form" action="/checkout" method="POST">
+            <form id="cart-form" action="/checkout/" method="POST">
                 <input type="hidden" id="cart-data" name="cart_data" value="">
                 <button type="submit" class="btn btn-success mt-2">Оплатить</button>
             </form>
