@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Flower Catalog</title>
+    <title>Каталог цветов</title>
 </head>
 <body>
-    <h1>Flower Catalog</h1>
+    <h1>Каталог цветов</h1>
+
+    <!-- Добавляем изображение -->
+    <img src="https://scontent-hel3-1.cdninstagram.com/v/t51.2885-15/e35/131213459_708532823435289_4553480122371181524_n.jpg?tp=1&_nc_ht=scontent-hel3-1.cdninstagram.com&_nc_cat=109&_nc_ohc=UIFDFB4I9kgAX_gf3P3&edm=ABfd0MgBAAAA&ccb=7-4&oh=61907efd4f06f9a263d9a4bc07116b1a&oe=60D6A634&_nc_sid=7bff83" alt="Букет цветов">
+
+    {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }}! <a href="{% url 'logout' %}">Logout</a></p>
+    {% else %}
+        <p><a href="{% url 'login' %}">Login</a> | <a href="{% url 'signup' %}">Sign Up</a></p>
+    {% endif %}
+
     <ul>
         {% for product in products %}
             <li>{{ product.name }} - ${{ product.price }}</li>
