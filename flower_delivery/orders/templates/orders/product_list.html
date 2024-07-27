@@ -42,10 +42,10 @@
         var totalPrice = 0; // Переменная для хранения общей суммы
         var cartItems = {}; // Объект для хранения количества каждого товара
 
-        function addToCart(productName, productPrice) {
+        function addToCart(productName, productNumber, productPrice) {
             var cartList = document.getElementById('cart-list');
             var cartItem = document.createElement('li');
-            cartItem.textContent = productName + ' - $' + productPrice;
+            cartItem.textContent = 'Букет ' + productNumber + ' - $' + productPrice;
 
             var removeButton = document.createElement('button');
             removeButton.textContent = 'Удалить';
@@ -61,15 +61,13 @@
 
             // Добавляем кнопку к элементу корзины
             cartItem.appendChild(removeButton);
-
             // Добавляем элемент корзины в список
             cartList.appendChild(cartItem);
 
             // Обновляем количество товара в корзине
             if (cartItems[productName]) {
                 cartItems[productName]++;
-            } else {
-                cartItems[productName] = 1;
+            } else {cartItems[productName] = 1;
             }
 
             // Обновляем общую сумму
@@ -90,9 +88,7 @@
             totalPrice = 0; // Сброс общей суммы
             document.getElementById('total-price').textContent = 'Общая сумма: $0';
             cartItems = {}; // Очистка объекта корзины
-
-            // Обновляем скрытое поле формы
-            updateCartForm();
+            updateCartForm(); // Обновляем форму после очистки корзины
         }
 
         function updateCartForm() {
@@ -112,14 +108,13 @@
                 <p><a href="{% url 'login' %}">Вход</a> | <a href="{% url 'signup' %}">Регистрация</a></p>
             {% endif %}
         </div>
-
         <div class="catalog">
             <!-- Первый товар -->
             <div class="catalog-item">
                 <img src="https://i.pinimg.com/originals/b1/05/6e/b1056eaf60fd9397925e1e7334c5531b.jpg" alt="Flower 1">
                 <h3>Букет 1</h3>
                 <div class="button-container">
-                    <button class="btn btn-primary" onclick="addToCart('Flower 1', 10)">Добавить в корзину</button>
+                    <button class="btn btn-primary" onclick="addToCart('Flower 1', 1, 10)">Добавить в корзину</button>
                 </div>
             </div>
             <!-- Второй товар -->
@@ -127,18 +122,19 @@
                 <img src="https://king-flower.ru/images/flowers2020/IMG_0717.jpg" alt="Flower 2">
                 <h3>Букет 2</h3>
                 <div class="button-container">
-                    <button class="btn btn-primary" onclick="addToCart('Flower 2', 15)">Добавить в корзину</button>
+                    <button class="btn btn-primary" onclick="addToCart('Flower 2', 2, 15)">Добавить в корзину</button>
                 </div>
             </div>
             <!-- Третий товар -->
             <div class="catalog-item">
                 <img src="https://xn--76-vlci2a3g.xn--p1ai/upload/image/miks_sezonnyh_tsvetov_2500r_(2).,.png" alt="Flower 3">
-                <h3>Букет  3</h3>
+                <h3>Букет 3</h3>
                 <div class="button-container">
-                    <button class="btn btn-primary" onclick="addToCart('Flower 3', 20)">Добавить в корзину</button>
+                    <button class="btn btn-primary" onclick="addToCart('Flower 3',3, 20)">Добавить в корзину</button>
                 </div>
             </div>
-        </div><div class="cart">
+        </div>
+        <div class="cart">
             <h2>Корзина</h2>
             <ul id="cart-list">
                 <!-- Элементы корзины будут добавляться сюда с помощью JavaScript -->
@@ -147,7 +143,7 @@
             <button class="btn btn-warning mt-2" onclick="clearCart()">Убрать все заказы</button>
             <form id="cart-form" action="/checkout" method="POST">
                 <input type="hidden" id="cart-data" name="cart_data" value="">
-                <button type="submit" class="btn btn-success mt-2">Оформить заказ</button>
+                <button type="submit" class="btn btn-success mt-2">Оформление заказа</button>
             </form>
         </div>
     </div>
