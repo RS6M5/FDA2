@@ -116,8 +116,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="adminLoginModalLabel">Вход для администратора</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <h5 class="modal-title" id="adminLoginModalLabel">Вход для администратора</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -176,117 +175,97 @@
             renderCart();
         }
 
-             function renderCart() {
+        function renderCart() {
             const cartList = document.getElementById('cart-list');
-            const totalPrice = document.getElementById('total-price');
             cartList.innerHTML = '';
-            let total = 0;
-
+            let totalPrice = 0;
             cart.forEach((item, index) => {
-                total += item.price;
+                totalPrice += item.price;
                 const li = document.createElement('li');
                 li.textContent = `${item.name} - $${item.price}`;
-                const removeButton = document.createElement('button');
-                removeButton.textContent = "Удалить";
-                removeButton.onclick = () => removeFromCart(index);
-                li.appendChild(removeButton);
+                const button = document.createElement('button');
+                button.textContent = 'Удалить';
+                button.classList.add('btn', 'btn-danger', 'btn-sm', 'ml-2');
+                button.onclick = () => removeFromCart(index);
+                li.appendChild(button);
                 cartList.appendChild(li);
             });
-
-            totalPrice.textContent = `Общая сумма: $${total}`;
+            document.getElementById('total-price').textContent = `Общая сумма: $${totalPrice}`;
+            document.getElementById('cart-data').value = JSON.stringify(cart);
         }
 
-        function clearCart() {
+             function clearCart() {
             cart = [];
             renderCart();
         }
 
-        function showOrderDetails() {
-            const orderDetails = document.getElementById('order-details');
-            orderDetails.innerHTML = '';
-
-            cart.forEach(item => {
-                const p = document.createElement('p');
-                p.textContent = `${item.name} - $${item.price}`;
-                orderDetails.appendChild(p);
+        function renderCart() {
+            const cartList = document.getElementById('cart-list');
+            const totalPrice = document.getElementById('total-price');
+            cartList.innerHTML = '';
+            let total = 0;
+            cart.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} - $${item.price}`;
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Удалить';
+                removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'ml-2');
+                removeButton.onclick = () => removeFromCart(index);
+                li.appendChild(removeButton);
+                cartList.appendChild(li);
+                total += item.price;
             });
-
-            $('#orderDetailsModal').modal('show');
+            totalPrice.textContent = `Общая сумма: $${total}`;
+            document.getElementById('cart-data').value = JSON.stringify(cart);
         }
 
         function submitOrder() {
-            $('#orderDetailsModal').modal('hide');
-            $('#deliveryDetailsModal').modal('show');
-        }
-
-        function confirmDeliveryDetails() {
-            const lastName = document.getElementById('last-name').value;
-            const firstName = document.getElementById('first-name').value;
-            const middleName = document.getElementById('middle-name').value;
-            const city = document.getElementById('city').value;
-            const street = document.getElementById('street').value;
-
-            if (lastName && firstName && middleName && city && street) {
-                const order = {
-                    cart: [...cart],
-                    deliveryDetails: {
-                        lastName,
-                        firstName,
-                        middleName,
-                        city,
-                        street
-                    }
-                };
-
-                orders.push(order);
-                clearCart();
-                $('#deliveryDetailsModal').modal('hide');
-                alert('Заказ подтвержден!');
-            } else {
-                alert('Пожалуйста, заполните все поля.');
+            if (cart.length === 0) {
+                alert('Корзина пуста!');
+                return;
             }
+            orders.push([...cart]);
+            clearCart();
+            $('#orderDetailsModal').modal('hide');
+            alert('Заказ оформлен!');
         }
-    </script>
 
-    <!-- Модальное окно для данных доставки -->
-    <div class="modal fade" id="deliveryDetailsModal" tabindex="-1" role="dialog" aria-labelledby="deliveryDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header"><h5 class="modal-title" id="deliveryDetailsModalLabel">Данные для доставки</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="last-name">Фамилия</label>
-                            <input type="text" class="form-control" id="last-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="first-name">Имя</label>
-                            <input type="text" class="form-control" id="first-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="middle-name">Отчество</label>
-                            <input type="text" class="form-control" id="middle-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="city">Город</label>
-                            <input type="text" class="form-control" id="city" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="street">Улица</label>
-                            <input type="text" class="form-control" id="street" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmDeliveryDetails()">Подтвердить</button>
-                </div>
-            </div>
-        </div>
-    </div>
+        function showOrderDetails() {
+            const orderDetails = document.getElementById('order-details');
+            orderDetails.innerHTML = cart.map(item => `<p>${item.name} - $${item.price}</p>`).join('');
+            $('#orderDetailsModal').modal('show');
+        }
+
+        function renderOrders() {
+            const ordersList = document.getElementById('orders-list');
+            ordersList.innerHTML = '';
+            orders.forEach((order, orderIndex) => {
+                const orderDiv = document.createElement('div');
+                orderDiv.classList.add('order');
+                orderDiv.innerHTML = `<h5>Заказ ${orderIndex + 1}</h5>`;
+                order.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.textContent = `${item.name} - $${item.price}`;
+                    orderDiv.appendChild(itemDiv);
+                });
+                const reorderButton = document.createElement('button');
+                reorderButton.textContent = 'Заказать повторно';
+                reorderButton.classList.add('btn', 'btn-primary', 'mt-2');
+                reorderButton.onclick = () => reorder(order);
+                orderDiv.appendChild(reorderButton);
+                ordersList.appendChild(orderDiv);
+            });
+        }
+
+        function reorder(order) {
+            cart = [...order];
+            renderCart();
+            $('#ordersModal').modal('hide');
+        }
+
+        $(document).ready(function() {
+            $('#ordersModal').on('show.bs.modal', renderOrders);
+        });
+    </script>
 </body>
 </html>
