@@ -176,23 +176,24 @@
             renderCart();
         }
 
-        function renderCart() {
+             function renderCart() {
             const cartList = document.getElementById('cart-list');
+            const totalPrice = document.getElementById('total-price');
             cartList.innerHTML = '';
-            let totalPrice = 0;
+            let total = 0;
+
             cart.forEach((item, index) => {
+                total += item.price;
                 const li = document.createElement('li');
                 li.textContent = `${item.name} - $${item.price}`;
                 const removeButton = document.createElement('button');
-                removeButton.textContent = 'Удалить';
-                removeButton.className = 'btn btn-danger btn-sm ml-2';
+                removeButton.textContent = "Удалить";
                 removeButton.onclick = () => removeFromCart(index);
                 li.appendChild(removeButton);
                 cartList.appendChild(li);
-                totalPrice += item.price;
             });
-            document.getElementById('total-price').textContent = `Общая сумма: $${totalPrice}`;
-            document.getElementById('cart-data').value = JSON.stringify(cart);
+
+            totalPrice.textContent = `Общая сумма: $${total}`;
         }
 
         function clearCart() {
@@ -200,55 +201,92 @@
             renderCart();
         }
 
-        function submitOrder() {
-            if (cart.length > 0) {
-                orders.push([...cart]); // Save current cart as a new order
-                clearCart();
-                $('#orderDetailsModal').modal('hide');
-                alert('Ваш заказ был успешно оформлен!');
-            } else {
-                alert('Ваша корзина пуста.');
-            }
-        }
-
         function showOrderDetails() {
             const orderDetails = document.getElementById('order-details');
             orderDetails.innerHTML = '';
-            if (cart.length > 0) {
-                cart.forEach(item => {
-                    const p = document.createElement('p');
-                    p.textContent = `${item.name} - $${item.price}`;
-                    orderDetails.appendChild(p);
-                });
-                $('#orderDetailsModal').modal('show');
-            } else {
-                alert('Ваша корзина пуста.');
-            }
+
+            cart.forEach(item => {
+                const p = document.createElement('p');
+                p.textContent = `${item.name} - $${item.price}`;
+                orderDetails.appendChild(p);
+            });
+
+            $('#orderDetailsModal').modal('show');
         }
 
-        function renderOrders() {
-            const ordersList = document.getElementById('orders-list');
-            ordersList.innerHTML = '';
-            if (orders.length > 0) {
-                orders.forEach((order, index) => {
-                    const orderDiv = document.createElement('div');
-                    orderDiv.className = 'order';
-                    const orderHeader = document.createElement('h5');
-                    orderHeader.textContent = `Заказ ${index + 1}`;
-                    orderDiv.appendChild(orderHeader);
-                    order.forEach(item => {
-                        const p = document.createElement('p');
-                        p.textContent = `${item.name} - $${item.price}`;
-                        orderDiv.appendChild(p);
-                    });
-                    ordersList.appendChild(orderDiv);
-                });
-            } else {
-                ordersList.textContent = 'У вас нет заказов.';
-            }
+        function submitOrder() {
+            $('#orderDetailsModal').modal('hide');
+            $('#deliveryDetailsModal').modal('show');
         }
 
-        $('#ordersModal').on('show.bs.modal', renderOrders);
+        function confirmDeliveryDetails() {
+            const lastName = document.getElementById('last-name').value;
+            const firstName = document.getElementById('first-name').value;
+            const middleName = document.getElementById('middle-name').value;
+            const city = document.getElementById('city').value;
+            const street = document.getElementById('street').value;
+
+            if (lastName && firstName && middleName && city && street) {
+                const order = {
+                    cart: [...cart],
+                    deliveryDetails: {
+                        lastName,
+                        firstName,
+                        middleName,
+                        city,
+                        street
+                    }
+                };
+
+                orders.push(order);
+                clearCart();
+                $('#deliveryDetailsModal').modal('hide');
+                alert('Заказ подтвержден!');
+            } else {
+                alert('Пожалуйста, заполните все поля.');
+            }
+        }
     </script>
+
+    <!-- Модальное окно для данных доставки -->
+    <div class="modal fade" id="deliveryDetailsModal" tabindex="-1" role="dialog" aria-labelledby="deliveryDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title" id="deliveryDetailsModalLabel">Данные для доставки</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="last-name">Фамилия</label>
+                            <input type="text" class="form-control" id="last-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="first-name">Имя</label>
+                            <input type="text" class="form-control" id="first-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="middle-name">Отчество</label>
+                            <input type="text" class="form-control" id="middle-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">Город</label>
+                            <input type="text" class="form-control" id="city" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="street">Улица</label>
+                            <input type="text" class="form-control" id="street" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmDeliveryDetails()">Подтвердить</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
