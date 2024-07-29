@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -17,22 +19,22 @@
             position: fixed;
             top: 50px;
             right: 10px;
-            width: 200px; /* Уменьшенная ширина корзины */
+            width: 200px;
             border: 1px solid #000;
-            padding: 5px; /* Уменьшенный padding */
+            padding: 5px;
             background-color: #f9f9f9;
         }
         .catalog {
             display: flex;
-            gap: 20px; /* Расстояние между элементами */
+            gap: 20px;
         }
         .catalog-item {
-            text-align: center; /* Центрирование содержимого */
+            text-align: center;
             display: flex;
             flex-direction: column;
         }
         .catalog-item img {
-            width: 400px; /* Фиксированная ширина для всех изображений */
+            width: 400px;
         }
         .button-container {
             display: flex;
@@ -57,7 +59,8 @@
                 <img src="https://i.pinimg.com/originals/b1/05/6e/b1056eaf60fd9397925e1e7334c5531b.jpg" alt="Flower 1">
                 <h3>Букет 1</h3>
                 <div class="button-container">
-                    <button type="button" class="btn btn-primary" onclick="addToCart('Букет 1', 1, 10)">Добавить в корзину</button></div>
+                    <button type="button" class="btn btn-primary" onclick="addToCart('Букет 1', 1, 10)">Добавить в корзину</button>
+                </div>
             </div>
             <div class="catalog-item">
                 <img src="https://king-flower.ru/images/flowers2020/IMG_0717.jpg" alt="Flower 2">
@@ -69,6 +72,7 @@
             <div class="catalog-item">
                 <img src="https://xn--76-vlci2a3g.xn--p1ai/upload/image/miks_sezonnyh_tsvetov_2500r_(2).,.png" alt="Flower 3">
                 <h3>Букет 3</h3>
+
                 <div class="button-container">
                     <button type="button" class="btn btn-primary" onclick="addToCart('Букет 3', 3, 20)">Добавить в корзину</button>
                 </div>
@@ -88,10 +92,10 @@
                 <input type="hidden" id="cart-data" name="cart_data" value="">
             </form>
         </div>
-    </div>
+    </div><!-- Модальное окно для оформления заказа -->
 
-    <!-- Модальное окно для оформления заказа -->
-    <div class="modal fade" id="orderDetailsModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+
+<div class="modal fade" id="orderDetailsModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -137,7 +141,8 @@
         </div>
     </div>
 
-    <!-- Модальное окно для "Мои заказы" -->
+
+<!-- Модальное окно для "Мои заказы" -->
     <div class="modal fade" id="ordersModal" tabindex="-1" role="dialog" aria-labelledby="ordersModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -155,9 +160,7 @@
                 </div>
             </div>
         </div>
-    </div>
-
-     <!-- Отзывы Модальное окно -->
+    </div><!-- Отзывы Модальное окно -->
     <div class="modal fade" id="reviewsModal" tabindex="-1" aria-labelledby="reviewsModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -195,109 +198,86 @@
 
     <script>
         let cart = [];
-        let orders = []; // Array to store user orders
+let orders = [];
 
-        function addToCart(name, id, price) {
-            cart.push({ name, id, price });
-            renderCart();
-        }
+function clearCart() {
+    cart = [];
+    renderCart();
+}
 
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            renderCart();
-        }
+function renderCart() {
+    const cartList = document.getElementById('cart-list');
+    const totalPrice = document.getElementById('total-price');
+    cartList.innerHTML = '';
+    let total = 0;
+    cart.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - $${item.price}`;
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Удалить';
+        removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'ml-2');
+        removeButton.onclick = () => removeFromCart(index);
+        li.appendChild(removeButton);
+        cartList.appendChild(li);
+        total += item.price;
+    });
+    totalPrice.textContent = `Общая сумма: $${total}`;
+    document.getElementById('cart-data').value = JSON.stringify(cart);
+}
 
-        function renderCart() {
-            const cartList = document.getElementById('cart-list');
-            cartList.innerHTML = '';
-            let totalPrice = 0;
-            cart.forEach((item, index) => {
-                totalPrice += item.price;
-                const li = document.createElement('li');
-                li.textContent = `${item.name} - $${item.price}`;
-                const button = document.createElement('button');
-                button.textContent = 'Удалить';
-                button.classList.add('btn', 'btn-danger', 'btn-sm', 'ml-2');
-                button.onclick = () => removeFromCart(index);
-                li.appendChild(button);
-                cartList.appendChild(li);
-            });
-            document.getElementById('total-price').textContent = `Общая сумма: $${totalPrice}`;
-            document.getElementById('cart-data').value = JSON.stringify(cart);
-        }
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    renderCart();
+}
 
-             function clearCart() {
-            cart = [];
-            renderCart();
-        }
+function submitOrder() {
+    if (cart.length === 0) {
+        alert('Корзина пуста!');
+        return;
+    }
+    orders.push([...cart]);
+    clearCart();
+    $('#orderDetailsModal').modal('hide');
+    alert('Заказ оформлен!');
+}
 
-        function renderCart() {
-            const cartList = document.getElementById('cart-list');
-            const totalPrice = document.getElementById('total-price');
-            cartList.innerHTML = '';
-            let total = 0;
-            cart.forEach((item, index) => {
-                const li = document.createElement('li');
-                li.textContent = `${item.name} - $${item.price}`;
-                const removeButton = document.createElement('button');
-                removeButton.textContent = 'Удалить';
-                removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'ml-2');
-                removeButton.onclick = () => removeFromCart(index);
-                li.appendChild(removeButton);
-                cartList.appendChild(li);
-                total += item.price;
-            });
-            totalPrice.textContent = `Общая сумма: $${total}`;
-            document.getElementById('cart-data').value = JSON.stringify(cart);
-        }
+function showOrderDetails() {
+    const orderDetails = document.getElementById('order-details');
+    orderDetails.innerHTML = cart.map(item => `<p>${item.name} - $${item.price}</p>`).join('');
+    $('#orderDetailsModal').modal('show');
+}
 
-        function submitOrder() {
-            if (cart.length === 0) {
-                alert('Корзина пуста!');
-                return;
-            }
-            orders.push([...cart]);
-            clearCart();
-            $('#orderDetailsModal').modal('hide');
-            alert('Заказ оформлен!');
-        }
-
-        function showOrderDetails() {
-            const orderDetails = document.getElementById('order-details');
-            orderDetails.innerHTML = cart.map(item => `<p>${item.name} - $${item.price}</p>`).join('');
-            $('#orderDetailsModal').modal('show');
-        }
-
-        function renderOrders() {
-            const ordersList = document.getElementById('orders-list');
-            ordersList.innerHTML = '';
-            orders.forEach((order, orderIndex) => {
-                const orderDiv = document.createElement('div');
-                orderDiv.classList.add('order');
-                orderDiv.innerHTML = `<h5>Заказ ${orderIndex + 1}</h5>`;
-                order.forEach(item => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.textContent = `${item.name} - $${item.price}`;
-                    orderDiv.appendChild(itemDiv);
-                });
-                const reorderButton = document.createElement('button');
-                reorderButton.textContent = 'Заказать повторно';
-                reorderButton.classList.add('btn', 'btn-primary', 'mt-2');
-                reorderButton.onclick = () => reorder(order);
-                orderDiv.appendChild(reorderButton);
-                ordersList.appendChild(orderDiv);
-            });
-        }
-
-        function reorder(order) {
-            cart = [...order];
-            renderCart();
-            $('#ordersModal').modal('hide');
-        }
-
-        $(document).ready(function() {
-            $('#ordersModal').on('show.bs.modal', renderOrders);
+function renderOrders() {
+    const ordersList = document.getElementById('orders-list');
+    ordersList.innerHTML = '';
+    orders.forEach((order, orderIndex) => {
+        const orderDiv = document.createElement('div');
+        orderDiv.classList.add('order');
+        orderDiv.innerHTML = `<h5>Заказ ${orderIndex + 1}</h5>`;
+        order.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.textContent = `${item.name} - $${item.price}`;
+            orderDiv.appendChild(itemDiv);
         });
+        const reorderButton = document.createElement('button');
+        reorderButton.textContent = 'Заказать повторно';
+        reorderButton.classList.add('btn', 'btn-primary', 'mt-2');
+        reorderButton.onclick = () => reorder(order);
+        orderDiv.appendChild(reorderButton);
+        ordersList.appendChild(orderDiv);
+    });
+}
+
+function reorder(order)
+            {
+    cart = [...order];
+    renderCart();
+    $('#ordersModal').modal('hide');
+}
+
+$(document).ready(function() {
+    $('#ordersModal').on('show.bs.modal', renderOrders);
+});
     </script>
 </body>
 </html>
