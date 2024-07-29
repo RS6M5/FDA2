@@ -161,9 +161,41 @@
             cartList.innerHTML = '';
             let total = 0;
 
-            cart.forEach(item => {
+              cart.forEach(item => {
+                const p = document.createElement('p');
+                p.textContent = `${item.name} - $${item.price}`;
+                orderDetails.appendChild(p);
+            });
+
+            $('#orderDetailsModal').modal('show');
+        }
+
+        function submitOrder() {
+            // Code to submit the order
+            alert('Заказ подтвержден!');
+            clearCart();
+            $('#orderDetailsModal').modal('hide');
+        }
+
+        function removeItemFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartList = document.getElementById('cart-list');
+            const totalPrice = document.getElementById('total-price');
+            cartList.innerHTML = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
                 const li = document.createElement('li');
-                li.textContent = `${item.name} - $${item.price}`;
+                li.textContent = `${item.name} - $${item.price} `;
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Удалить';
+                removeButton.classList.add('btn', 'btn-danger', 'btn-sm');
+                removeButton.onclick = () => removeItemFromCart(index);
+                li.appendChild(removeButton);
                 cartList.appendChild(li);
                 total += item.price;
             });
@@ -171,11 +203,66 @@
             totalPrice.textContent = `Общая сумма: $${total}`;
             document.getElementById('cart-data').value = JSON.stringify(cart);
         }
+    </script>
+
+    <!-- Модальное окно для списка заказов -->
+    <div class="modal fade" id="ordersModal" tabindex="-1" role="dialog" aria-labelledby="ordersModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ordersModalLabel">Мои заказы</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="orders-list">
+                    <!-- Orders will be inserted here by JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для отзывов и рейтингов -->
+    <div class="modal fade" id="reviewsModal" tabindex="-1" role="dialog" aria-labelledby="reviewsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title" id="reviewsModalLabel">Отзывы и рейтинги</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="review-form">
+                        <div class="form-group">
+                            <label for="review-text">Ваш отзыв</label>
+                            <textarea class="form-control" id="review-text" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="review-rating">Оценка</label>
+                            <select class="form-control" id="review-rating" required>
+                                <option value="5">5</option>
+                                <option value="4">4</option>
+                                <option value="3">3</option>
+                                <option value="2">2</option>
+                                <option value="1">1</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let orders = [];
 
         function showOrderDetails() {
             const orderDetails = document.getElementById('order-details');
             orderDetails.innerHTML = '';
-
             cart.forEach(item => {
                 const p = document.createElement('p');
                 p.textContent = `${item.name} - $${item.price}`;
@@ -186,10 +273,52 @@
         }
 
         function submitOrder() {
-            // Здесь можно добавить логику для отправки заказа на сервер
-            alert('Заказ подтвержден!');
-            $('#orderDetailsModal').modal('hide');clearCart();
+            if (cart.length > 0) {
+                orders.push([...cart]);
+                alert('Заказ подтвержден!');
+                clearCart();
+                $('#orderDetailsModal').modal('hide');
+            } else {
+                alert('Корзина пуста');
+            }
         }
+
+        function showOrders() {
+            const ordersList = document.getElementById('orders-list');
+            ordersList.innerHTML = '';
+            orders.forEach((order, orderIndex) => {
+                const orderDiv = document.createElement('div');
+                orderDiv.classList.add('mb-3');
+                orderDiv.innerHTML = `<strong>Заказ ${orderIndex + 1}</strong>`;
+                order.forEach(item => {
+                    const p = document.createElement('p');
+                    p.textContent = `${item.name} - $${item.price}`;
+                    orderDiv.appendChild(p);
+                });
+                const reorderButton = document.createElement('button');
+                reorderButton.textContent = 'Заказать повторно';
+                reorderButton.classList.add('btn', 'btn-success', 'btn-sm');
+                reorderButton.onclick = () => reorder(orderIndex);
+                orderDiv.appendChild(reorderButton);
+                ordersList.appendChild(orderDiv);
+            });
+        }
+
+        function reorder(orderIndex) {
+            cart = [...orders[orderIndex]];
+            updateCart();
+            $('#ordersModal').modal('hide');
+        }
+
+        document.getElementById('review-form').onsubmit = function(event) {
+            event.preventDefault();
+            const reviewText = document.getElementById('review-text').value;
+            const reviewRating = document.getElementById('review-rating').value;
+            alert(`Ваш отзыв: ${reviewText}\nВаша оценка: ${reviewRating}`);
+            $('#reviewsModal').modal('hide');
+        }
+
+        $('#ordersModal').on('show.bs.modal', showOrders);
     </script>
 </body>
 </html>
