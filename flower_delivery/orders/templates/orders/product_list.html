@@ -46,7 +46,7 @@
     </style>
 </head>
 <body>
-     <div class="container">
+    <div class="container">
         <h1>Каталог цветов</h1>
         <div class="auth-links">
             <button type="button" class="btn btn-info" data-toggle="modal" data-target="#adminLoginModal">Вход для администратора</button>
@@ -91,9 +91,36 @@
             </form>
         </div>
 
+            <!-- Admin Login Modal -->
+    <div class="modal fade" id="adminLoginModal" tabindex="-1" role="dialog" aria-labelledby="adminLoginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adminLoginModalLabel">Вход для администратора</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="adminLoginForm">
+                        <div class="form-group">
+                            <label for="adminEmail">Почта</label>
+                            <input type="email" class="form-control" id="adminEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminPassword">Пароль</label>
+                            <input type="password" class="form-control" id="adminPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Войти</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-          <!-- Модальное окно для регистрации -->
+
+        <!-- Модальное окно для регистрации -->
         <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -121,8 +148,7 @@
         </div>
 
         <!-- Модальное окно для входа -->
-        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true"><div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="loginModalLabel">Вход</h5>
@@ -146,242 +172,181 @@
                 </div>
             </div>
         </div>
-    </div>
 
-
-
-      </div><!-- Модальное окно для оформления заказа -->
-    <div class="modal fade" id="orderDetailsModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="orderDetailsModalLabel">Информация о заказе</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="order-details">
-                    <!-- Order details will be inserted here by JavaScript -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary" onclick="submitOrder()">Подтвердить заказ</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно для входа администратора -->
-    <div class="modal fade" id="adminLoginModal" tabindex="-1" role="dialog" aria-labelledby="adminLoginModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="adminLoginModalLabel">Вход для администратора</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="admin-login-form">
-                        <div class="form-group">
-                            <label for="admin-username">Имя пользователя</label>
-                            <input type="text" class="form-control" id="admin-username" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="admin-password">Пароль</label>
-                            <input type="password" class="form-control" id="admin-password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Войти</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Подключение jQuery и Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <!-- JavaScript для работы с корзиной -->
-    <script>
-        let cart = [];
-
-        function addToCart(name, id, price) {
-            const item = { name, id, price };
-            cart.push(item);
-            updateCart();
-        }
-
-        function clearCart() {
-            cart = [];
-            updateCart();
-        }
-
-        function updateCart() {
-            const cartList = document.getElementById('cart-list');
-            const totalPrice = document.getElementById('total-price');
-            cartList.innerHTML = '';
-            let total = 0;
-
-              cart.forEach(item => {
-                const p = document.createElement('p');
-                p.textContent = `${item.name} - $${item.price}`;
-                orderDetails.appendChild(p);
-            });
-
-            $('#orderDetailsModal').modal('show');
-        }
-
-        function submitOrder() {
-            // Code to submit the order
-            alert('Заказ подтвержден!');
-            clearCart();
-            $('#orderDetailsModal').modal('hide');
-        }
-
-        function removeItemFromCart(index) {
-            cart.splice(index, 1);
-            updateCart();
-        }
-
-        function updateCart() {
-            const cartList = document.getElementById('cart-list');
-            const totalPrice = document.getElementById('total-price');
-            cartList.innerHTML = '';
-            let total = 0;
-
-            cart.forEach((item, index) => {
-                const li = document.createElement('li');
-                li.textContent = `${item.name} - $${item.price} `;
-                const removeButton = document.createElement('button');
-                removeButton.textContent = 'Удалить';
-                removeButton.classList.add('btn', 'btn-danger', 'btn-sm');
-                removeButton.onclick = () => removeItemFromCart(index);
-                li.appendChild(removeButton);
-                cartList.appendChild(li);
-                total += item.price;
-            });
-
-            totalPrice.textContent = `Общая сумма: $${total}`;
-            document.getElementById('cart-data').value = JSON.stringify(cart);
-        }
-    </script>
-
-
-    <!-- Модальное окно для списка заказов -->
-    <div class="modal fade" id="ordersModal" tabindex="-1" role="dialog" aria-labelledby="ordersModalLabel" aria-hidden="true">
+        <!-- Модальное окно для заказов -->
+            <div class="modal fade" id="ordersModal" tabindex="-1" role="dialog" aria-labelledby="ordersModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="ordersModalLabel">Мои заказы</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
-                    </button>
+                    </button></div>
+                <div class="modal-body">
+                    <ul id="orders-list">
+                        <!-- Orders will be added here by JavaScript -->
+                    </ul>
                 </div>
-                <div class="modal-body" id="orders-list">
-                    <!-- Orders will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+        <!-- Модальное окно для оформления заказа -->
+        <div class="modal fade" id="orderDetailsModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="orderDetailsModalLabel">Информация о заказе</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="order-details">
+                        <!-- Order details will be inserted here by JavaScript -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" onclick="confirmOrder()">Подтвердить заказ</button>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+
+        <!-- Модальное окно для доставки -->
+        <div class="modal fade" id="deliveryModal" tabindex="-1" role="dialog" aria-labelledby="deliveryModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deliveryModalLabel">Информация о доставке</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="delivery-form">
+                            <div class="form-group">
+                                <label for="delivery-lastname">Фамилия</label>
+                                <input type="text" class="form-control" id="delivery-lastname" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="delivery-firstname">Имя</label>
+                                <input type="text" class="form-control" id="delivery-firstname" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="delivery-middlename">Отчество</label>
+                                <input type="text" class="form-control" id="delivery-middlename" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="delivery-address">Адрес доставки</label>
+                                <input type="text" class="form-control" id="delivery-address" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Отправить</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Модальное окно для отзывов и рейтингов -->
-    <div class="modal fade" id="reviewsModal" tabindex="-1" role="dialog" aria-labelledby="reviewsModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header"><h5 class="modal-title" id="reviewsModalLabel">Отзывы и рейтинги</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="review-form">
-                        <div class="form-group">
-                            <label for="review-text">Ваш отзыв</label>
-                            <textarea class="form-control" id="review-text" rows="3" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="review-rating">Оценка</label>
-                            <select class="form-control" id="review-rating" required>
-                                <option value="5">5</option>
-                                <option value="4">4</option>
-                                <option value="3">3</option>
-                                <option value="2">2</option>
-                                <option value="1">1</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Отправить</button>
-                    </form>
-                </div>
+<div class="modal fade" id="reviewsModal" tabindex="-1" role="dialog" aria-labelledby="reviewsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewsModalLabel">Отзывы и рейтинги</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="reviews-form">
+                    <div class="form-group">
+                        <label for="review-text">Отзыв</label><textarea class="form-control" id="review-text" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="review-rating">Рейтинг</label>
+                        <select class="form-control" id="review-rating" required>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
+
+    <!-- Подключение Bootstrap JS и Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        let orders = [];
+          let cart = [];
+    let orders = [];
 
-        function showOrderDetails() {
-            const orderDetails = document.getElementById('order-details');
-            orderDetails.innerHTML = '';
-            cart.forEach(item => {
-                const p = document.createElement('p');
-                p.textContent = `${item.name} - $${item.price}`;
-                orderDetails.appendChild(p);
-            });
+    function addToCart(name, id, price) {
+        cart.push({ name, id, price });
+        updateCart();
+    }
 
-            $('#orderDetailsModal').modal('show');
+    function clearCart() {
+        cart = [];
+        updateCart();
+    }
+
+    function updateCart() {
+        const cartList = document.getElementById('cart-list');
+        cartList.innerHTML = '';
+        let totalPrice = 0;
+        cart.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = `${item.name} - $${item.price}`;
+            cartList.appendChild(li);
+            totalPrice += item.price;
+        });
+        document.getElementById('total-price').textContent = `Общая сумма: $${totalPrice}`;
+    }
+
+    function showOrderDetails() {
+        if (cart.length > 0) {
+            orders.push([...cart]);
+            clearCart();
+            alert('Ваш заказ оформлен!');
+        } else {
+            alert('Корзина пуста!');
         }
+    }
 
-        function submitOrder() {
-            if (cart.length > 0) {
-                orders.push([...cart]);
-                alert('Заказ подтвержден!');
-                clearCart();
-                $('#orderDetailsModal').modal('hide');
-            } else {
-                alert('Корзина пуста');
-            }
-        }
+    function showOrders() {
+        const ordersList = document.getElementById('orders-list');
+        ordersList.innerHTML = '';
+        orders.forEach((order, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `Заказ ${index + 1}: ${order.map(item => item.name).join(', ')}`;
+            const repeatButton = document.createElement('button');
+            repeatButton.textContent = 'Заказать повторно';
+            repeatButton.classList.add('btn', 'btn-primary', 'ml-2');
+            repeatButton.onclick = () => repeatOrder(order);
+            li.appendChild(repeatButton);
+            ordersList.appendChild(li);
+        });
+    }
 
-        function showOrders() {
-            const ordersList = document.getElementById('orders-list');
-            ordersList.innerHTML = '';
-            orders.forEach((order, orderIndex) => {
-                const orderDiv = document.createElement('div');
-                orderDiv.classList.add('mb-3');
-                orderDiv.innerHTML = `<strong>Заказ ${orderIndex + 1}</strong>`;
-                order.forEach(item => {
-                    const p = document.createElement('p');
-                    p.textContent = `${item.name} - $${item.price}`;
-                    orderDiv.appendChild(p);
-                });
-                const reorderButton = document.createElement('button');
-                reorderButton.textContent = 'Заказать повторно';
-                reorderButton.classList.add('btn', 'btn-success', 'btn-sm');
-                reorderButton.onclick = () => reorder(orderIndex);
-                orderDiv.appendChild(reorderButton);
-                ordersList.appendChild(orderDiv);
-            });
-        }
+    function repeatOrder(order) {
+        cart = [...order];
+        updateCart();
+        $('#ordersModal').modal('hide');
+    }
 
-        function reorder(orderIndex) {
-            cart = [...orders[orderIndex]];
-            updateCart();
-            $('#ordersModal').modal('hide');
-        }
-
-        document.getElementById('review-form').onsubmit = function(event) {
-            event.preventDefault();
-            const reviewText = document.getElementById('review-text').value;
-            const reviewRating = document.getElementById('review-rating').value;
-            alert(`Ваш отзыв: ${reviewText}\nВаша оценка: ${reviewRating}`);
-            $('#reviewsModal').modal('hide');
-        }
-
-        $('#ordersModal').on('show.bs.modal', showOrders);
+    $(document).ready(function() {
+        $('#ordersModal').on('show.bs.modal', function() {
+            showOrders();
+        });
+    });
     </script>
 </body>
 </html>
