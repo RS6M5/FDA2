@@ -298,6 +298,32 @@
         updateCart();
     }
 
+      function updateCart() {
+            const cartList = document.getElementById('cart-list');
+            cartList.innerHTML = '';
+            cart.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${item.name} - $${item.price}`;
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Удалить';
+                removeButton.className = 'btn btn-danger btn-sm ml-2';
+                removeButton.onclick = () => removeFromCart(index);
+                listItem.appendChild(removeButton);
+                cartList.appendChild(listItem);
+            });
+            document.getElementById('total-price').textContent = `Общая сумма: $${totalPrice}`;
+        }
+
+        function clearCart() {
+            cart = [];
+            totalPrice = 0;
+            updateCart();
+        }
+
+        function showOrderDetails() {
+            alert('Заказ оформлен!');
+        }
+
     function updateCart() {
         const cartList = document.getElementById('cart-list');
         cartList.innerHTML = '';
