@@ -117,36 +117,48 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        let cart = [];
+         let cart = [];
 
-        function addToCart(name, id, price) {
-            cart.push({ name, id, price });
-            updateCart();
-        }
+    function addToCart(name, id, price) {
+        cart.push({ name, id, price });
+        updateCart();
+    }
 
-        function updateCart() {
-            const cartList = document.getElementById('cart-list');
-            const totalPrice = document.getElementById('total-price');
-            cartList.innerHTML = '';
-            let total = 0;
-            cart.forEach(item => {
-                const li = document.createElement('li');
-                li.textContent = `${item.name} - $${item.price}`;
-                cartList.appendChild(li);
-                total += item.price;
-            });
-            totalPrice.textContent = `Общая сумма: $${total}`;
-        }
+    function updateCart() {
+        const cartList = document.getElementById('cart-list');
+        const totalPrice = document.getElementById('total-price');
+        cartList.innerHTML = '';
+        let total = 0;
+        cart.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = `${item.name} - $${item.price}`;
+            cartList.appendChild(li);
+            total += item.price;
+        });
+        totalPrice.textContent = `Общая сумма: $${total}`;
+    }
 
-        function clearCart() {
-            cart = [];
-            updateCart();
-        }
+    function clearCart() {
+        cart = [];
+        updateCart();
+    }
 
-        function placeOrder() {
+    function placeOrder() {
+        const orderDetails = cart.map(item => `${item.name} - $${item.price}`).join('\n');
+        fetch('/place-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ orderDetails })
+        })
+        .then(response => response.json())
+        .then(data => {
             alert('Ваш заказ оформлен!');
             clearCart();
-        }
+        })
+        .catch(error => console.error('Error:', error));
+    }
     </script>
 </body>
 </html>

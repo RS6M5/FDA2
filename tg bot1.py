@@ -1,25 +1,24 @@
 import logging
-from telegram import Update
-from telegram.ext import Application, CommandHandler, CallbackContext
+from flask import Flask, request, jsonify
+from telegram import Bot
 
-# Вставьте ваш токен
+app = Flask(__name__)
+
 TELEGRAM_TOKEN = '7346026260:AAFkDie023ZDmarmPuSk6FsYpdy7Ef-cY4M'
+CHAT_ID = '7346026260'  # ID чата или пользователя, куда будут отправляться сообщения
+bot = Bot(token=TELEGRAM_TOKEN)
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
-async def start(update: Update, context: CallbackContext) -> None:
-    await update.message.reply_text('Welcome to Flower Delivery Bot!')
+@app.route('/place-order', methods=['POST'])
+def place_order():
+    data = request.json
+    order_details = data.get('orderDetails', '')
+    message = f'Вы оформили заказ:\n{order_details}'
 
-async def order(update: Update, context: CallbackContext) -> None:
-    await update.message.reply_text('Please provide your order details.')
+    bot.send_message(chat_id=CHAT_ID, text=message)
 
-def main() -> None:
-    application = Application.builder().token(TELEGRAM_TOKEN).build()
-
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("order", order))
-
-    application.run_polling()
+    return jsonify({"status": "success", "message": "Order placed successfully."})
 
 if __name__ == '__main__':
-    main()
+    app.run(debug=True)
