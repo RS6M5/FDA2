@@ -65,8 +65,7 @@
                     <button type="button" class="btn btn-primary" onclick="addToCart('Букет 2', 2, 15)">Добавить в корзину</button>
                 </div>
             </div>
-            <div class="catalog-item">
-                <img src="https://xn--76-vlci2a3g.xn--p1ai/upload/image/miks_sezonnyh_tsvetov_2500r_(2).,.png" alt="Flower 3">
+            <div class="catalog-item"><img src="https://xn--76-vlci2a3g.xn--p1ai/upload/image/miks_sezonnyh_tsvetov_2500r_(2).,.png" alt="Flower 3">
                 <h3>Букет 3</h3>
                 <div class="button-container">
                     <button type="button" class="btn btn-primary" onclick="addToCart('Букет 3', 3, 20)">Добавить в корзину</button>
@@ -84,7 +83,7 @@
         </div>
     </div>
 
-    <!-- Модальное окно для регистрации -->
+    <!-- Модальное окно регистрации -->
     <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -97,8 +96,12 @@
                 <div class="modal-body">
                     <form id="registerForm">
                         <div class="form-group">
-                            <label for="username">Логин</label>
+                            <label for="username">Имя пользователя</label>
                             <input type="text" class="form-control" id="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Электронная почта</label>
+                            <input type="email" class="form-control" id="email" required>
                         </div>
                         <div class="form-group">
                             <label for="password">Пароль</label>
@@ -111,54 +114,80 @@
         </div>
     </div>
 
+    <!-- Модальное окно для подтверждения заказа -->
+    <div class="modal fade" id="orderConfirmationModal" tabindex="-1" aria-labelledby="orderConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderConfirmationModalLabel">Подтверждение заказа</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Ваш заказ оформлен
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Подключение Bootstrap JS и jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-         let cart = [];
+        let cart = [];
+        let totalPrice = 0;
 
-    function addToCart(name, id, price) {
-        cart.push({ name, id, price });
-        updateCart();
-    }
+        function addToCart(name, id, price) {
+            cart.push({name, id, price});
+            totalPrice += price;
+            updateCart();
+        }
 
-    function updateCart() {
-        const cartList = document.getElementById('cart-list');
-        const totalPrice = document.getElementById('total-price');
-        cartList.innerHTML = '';
-        let total = 0;
-        cart.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = `${item.name} - $${item.price}`;
-            cartList.appendChild(li);
-            total += item.price;
-        });
-        totalPrice.textContent = `Общая сумма: $${total}`;
-    }
+        function updateCart() {
+            const cartList = document.getElementById('cart-list');
+            cartList.innerHTML = '';
+            cart.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} - $${item.price}`;
+                cartList.appendChild(li);
+            });
+            document.getElementById('total-price').textContent = `Общая сумма: $${totalPrice}`;
+        }
 
-    function clearCart() {
-        cart = [];
-        updateCart();
-    }
+        function clearCart() {
+            cart = [];
+            totalPrice = 0;
+            updateCart();
+        }
 
-    function placeOrder() {
-        const orderDetails = cart.map(item => `${item.name} - $${item.price}`).join('\n');
-        fetch('/place-order', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ orderDetails })
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert('Ваш заказ оформлен!');
+        function placeOrder() {
+            if (cart.length === 0) {
+                alert('Корзина пуста!');
+                return;
+            }
+            $('#orderConfirmationModal').modal('show');
             clearCart();
-        })
-        .catch(error => console.error('Error:', error));
-    }
+        }
+
+        // Обработчик формы регистрации
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Здесь можно добавить логику для регистрации пользователя
+            console.log(`Регистрация пользователя: ${username}, Email: ${email}`);
+
+            // Закрыть модальное окно после регистрации
+            $('#registerModal').modal('hide');
+        });
     </script>
 </body>
 </html>
