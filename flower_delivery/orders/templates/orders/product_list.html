@@ -76,12 +76,12 @@
             <h2>Корзина</h2>
             <ul id="cart-list">
                 <!-- Cart items will be added here by JavaScript -->
-            </ul>
-            <p id="total-price">Общая сумма: $0</p>
+            </ul><p id="total-price">Общая сумма: $0</p>
             <button type="button" class="btn btn-warning mt-2" onclick="clearCart()">Убрать все заказы</button>
             <button type="button" class="btn btn-info mt-2" onclick="placeOrder()">Оформить заказ</button>
         </div>
     </div>
+
 
     <!-- Модальное окно регистрации -->
     <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
@@ -107,6 +107,10 @@
                             <label for="password">Пароль</label>
                             <input type="password" class="form-control" id="password" required>
                         </div>
+                        <div class="form-group">
+                            <label for="phone">Номер телефона</label>
+                            <input type="tel" class="form-control" id="phone" required>
+                        </div>
                         <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
                     </form>
                 </div>
@@ -124,8 +128,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    Ваш заказ оформлен
+                <div class="modal-body">Ваш заказ оформлен
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -133,6 +136,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Подключение Bootstrap JS и jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -148,6 +152,34 @@
             totalPrice += price;
             updateCart();
         }
+
+
+        nst sqlite3 = require('sqlite3').verbose();
+
+   const db = new sqlite3.Database(':memory:');
+
+   db.serialize(() => {
+       // Создание таблицы пользователей
+       db.run(`CREATE TABLE users (
+           id INTEGER PRIMARY KEY AUTOINCREMENT,
+           username TEXT NOT NULL,
+           email TEXT NOT NULL UNIQUE,
+           password TEXT NOT NULL,
+           phone TEXT
+       )`);
+
+       // Создание таблицы заказов
+       db.run(`CREATE TABLE orders (
+           id INTEGER PRIMARY KEY AUTOINCREMENT,
+           user_id INTEGER,
+           items TEXT,
+           total_price REAL,
+           FOREIGN KEY(user_id) REFERENCES users(id)
+       )`);
+   });
+
+   module.exports = db;
+
 
         function updateCart() {
             const cartList = document.getElementById('cart-list');
@@ -175,19 +207,7 @@
             clearCart();
         }
 
-        // Обработчик формы регистрации
-        document.getElementById('registerForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
 
-            // Здесь можно добавить логику для регистрации пользователя
-            console.log(`Регистрация пользователя: ${username}, Email: ${email}`);
-
-            // Закрыть модальное окно после регистрации
-            $('#registerModal').modal('hide');
-        });
     </script>
 </body>
 </html>

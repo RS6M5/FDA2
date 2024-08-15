@@ -1,4 +1,8 @@
-import telebot
+import telebot, requests
+from telebot import types
+import json
+
+
 
 name = ''
 surname = ''
@@ -16,6 +20,42 @@ markup.add(itembtn1, itembtn4)
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     bot.send_message(message.chat.id, "Добро пожаловать! Выберите опцию из меню ниже.", reply_markup=markup)
+    print(message.chat.id)
+    chat_id = message.chat.id
+    message = "Тест"
+    url = f"https://api.telegram.org/bot7346026260:AAFkDie023ZDmarmPuSk6FsYpdy7Ef-cY4M/sendMessage?chat_id={chat_id}&text={message}"
+    print(requests.get(url).json())  # Эта строка отсылает сообщение
+
+
+@bot.message_handler(commands=['number'])  # Объявили ветку для работы по команде <strong>number</strong>
+def phone(message):
+    keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)  # Подключаем клавиатуру
+    button_phone = types.KeyboardButton(text="Отправить телефон",
+                                        request_contact=True)  # Указываем название кнопки, которая появится у пользователя
+    keyboard.add(button_phone)  # Добавляем эту кнопку
+    bot.send_message(message.chat.id, 'Номер телефона',
+                     reply_markup=keyboard)  # Дублируем сообщением о том, что пользователь сейчас отправит боту свой номер телефона (на всякий случай, но это не обязательно)
+
+
+@bot.message_handler(content_types=[
+    'contact'])  # Объявили ветку, в которой прописываем логику на тот случай, если пользователь решит прислать номер телефона
+def contact(message):
+    if message.contact is not None:  # Если присланный объект <strong>contact</strong> не равен нулю
+        phone2 = message.contact.phone_number
+        with open('orders.json') as json_file:
+            order_details = json.load(json_file)
+
+        with open('users.json') as json_file2:
+            user_info = json.load(json_file2)
+
+        if user_info['phone'] == phone2:
+            user = user_info["username"]
+            if order_details["customer_name"] == user:
+                bot.send_message(message.from_user.id, order_details["order_id"])
+                bot.send_message(message.from_user.id, order_details["items"])
+                bot.send_message(message.from_user.id, order_details["total_price"])
+
+
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
