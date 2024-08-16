@@ -42,19 +42,21 @@ def phone(message):
 def contact(message):
     if message.contact is not None:  # Если присланный объект <strong>contact</strong> не равен нулю
         phone2 = message.contact.phone_number
-        with open('orders.json') as json_file:
+        with open('C:\\Users\\Asus\\Downloads\\order.json') as json_file:
             order_details = json.load(json_file)
 
-        with open('users.json') as json_file2:
+        with open('C:\\Users\\Asus\\Downloads\\user_data.json') as json_file2:
             user_info = json.load(json_file2)
 
-        if user_info['phone'] == phone2:
-            user = user_info["username"]
-            if order_details["customer_name"] == user:
-                bot.send_message(message.from_user.id, order_details["order_id"])
-                bot.send_message(message.from_user.id, order_details["items"])
-                bot.send_message(message.from_user.id, order_details["total_price"])
-
+    print(order_details)
+    print(user_info)
+    if user_info['phone'] == phone2:
+        user = user_info["username"]
+        for j in range(len(order_details)):
+            if order_details[j]["customer_name"] == user:
+                bot.send_message(message.from_user.id, order_details[j]["order_id"])
+                bot.send_message(message.from_user.id, order_details[j]["items"])
+                bot.send_message(message.from_user.id, order_details[j]["total_price"])
 
 
 @bot.message_handler(content_types=['text'])

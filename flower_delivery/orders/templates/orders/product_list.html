@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог цветов</title>
-    <!-- Подключение Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
     <style>
         .auth-links {
             position: absolute;
@@ -55,159 +53,73 @@
                 <img src="https://i.pinimg.com/originals/b1/05/6e/b1056eaf60fd9397925e1e7334c5531b.jpg" alt="Flower 1">
                 <h3>Букет 1</h3>
                 <div class="button-container">
-                    <button type="button" class="btn btn-primary" onclick="addToCart('Букет 1', 1, 10)">Добавить в корзину</button>
+                    <button type="button" class="btn btn-primary" onclick="addToCart('Букет 1', 10)">Добавить в корзину</button>
                 </div>
             </div>
             <div class="catalog-item">
                 <img src="https://king-flower.ru/images/flowers2020/IMG_0717.jpg" alt="Flower 2">
                 <h3>Букет 2</h3>
                 <div class="button-container">
-                    <button type="button" class="btn btn-primary" onclick="addToCart('Букет 2', 2, 15)">Добавить в корзину</button>
+                    <button type="button" class="btn btn-primary" onclick="addToCart('Букет 2', 15)">Добавить в корзину</button>
                 </div>
             </div>
-            <div class="catalog-item"><img src="https://xn--76-vlci2a3g.xn--p1ai/upload/image/miks_sezonnyh_tsvetov_2500r_(2).,.png" alt="Flower 3">
+            <div class="catalog-item">
+                <img src="https://xn--76-vlci2a3g.xn--p1ai/upload/image/miks_sezonnyh_tsvetov_2500r_(2).,.png" alt="Flower 3">
                 <h3>Букет 3</h3>
                 <div class="button-container">
-                    <button type="button" class="btn btn-primary" onclick="addToCart('Букет 3', 3, 20)">Добавить в корзину</button>
-                </div>
-            </div>
-        </div>
-        <div class="cart">
-            <h2>Корзина</h2>
-            <ul id="cart-list">
-                <!-- Cart items will be added here by JavaScript -->
-            </ul><p id="total-price">Общая сумма: $0</p>
-            <button type="button" class="btn btn-warning mt-2" onclick="clearCart()">Убрать все заказы</button>
-            <button type="button" class="btn btn-info mt-2" onclick="placeOrder()">Оформить заказ</button>
-        </div>
-    </div>
-
-
-    <!-- Модальное окно регистрации -->
-    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">Регистрация</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="registerForm">
-                        <div class="form-group">
-                            <label for="username">Имя пользователя</label>
-                            <input type="text" class="form-control" id="username" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Электронная почта</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Пароль</label>
-                            <input type="password" class="form-control" id="password" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Номер телефона</label>
-                            <input type="tel" class="form-control" id="phone" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-                    </form>
+                    <button type="button" class="btn btn-primary" onclick="addToCart('Букет 3', 20)">Добавить в корзину</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Модальное окно для подтверждения заказа -->
-    <div class="modal fade" id="orderConfirmationModal" tabindex="-1" aria-labelledby="orderConfirmationModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="orderConfirmationModalLabel">Подтверждение заказа</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">Ваш заказ оформлен
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                </div>
-            </div>
-        </div>
+    <div class="cart">
+        <h2>Корзина</h2>
+        <p id="customer-name">
+            Имя клиента: <input type="text" id="customerNameInput" placeholder="Введите ваше имя">
+            <button type="button" onclick="saveCustomerName()">Сохранить</button>
+        </p>
+        <ul id="cart-list">
+            <!-- Cart items will be added here by JavaScript -->
+        </ul>
+        <p id="total-price">Общая сумма: $0</p>
+        <button type="button" class="btn btn-warning mt-2" onclick="clearCart()">Убрать все заказы</button>
+        <button type="button" class="btn btn-info mt-2" onclick="placeOrder()">Оформить заказ</button>
     </div>
-
-
-    <!-- Подключение Bootstrap JS и jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        let cart = [];
-        let totalPrice = 0;
+        // Загружаем имя клиента из localStorage при загрузке страницы
+        window.onload = function() {
+            const storedName = localStorage.getItem('customerName');
+            if (storedName) {
+                document.getElementById('customerNameInput').value = storedName;
+                document.getElementById('customer-name').textContent = `Имя клиента: ${storedName}`;
+            }
+        };
 
-        function addToCart(name, id, price) {
-            cart.push({name, id, price});
-            totalPrice += price;
-            updateCart();
+        function saveCustomerName() {
+            const nameInput = document.getElementById('customerNameInput');
+            const name = nameInput.value.trim(); // Получаем значение из поля ввода и удаляем пробелы
+            if (name) {
+                localStorage.setItem('customerName', name); // Сохраняем имя в localStorage
+                document.getElementById('customer-name').textContent = `Имя клиента: ${name}`;
+                nameInput.value = ''; // Очищаем поле ввода после сохранения
+            } else {
+                alert('Пожалуйста, введите ваше имя.');
+            }
         }
 
-
-        nst sqlite3 = require('sqlite3').verbose();
-
-   const db = new sqlite3.Database(':memory:');
-
-   db.serialize(() => {
-       // Создание таблицы пользователей
-       db.run(`CREATE TABLE users (
-           id INTEGER PRIMARY KEY AUTOINCREMENT,
-           username TEXT NOT NULL,
-           email TEXT NOT NULL UNIQUE,
-           password TEXT NOT NULL,
-           phone TEXT
-       )`);
-
-       // Создание таблицы заказов
-       db.run(`CREATE TABLE orders (
-           id INTEGER PRIMARY KEY AUTOINCREMENT,
-           user_id INTEGER,
-           items TEXT,
-           total_price REAL,
-           FOREIGN KEY(user_id) REFERENCES users(id)
-       )`);
-   });
-
-   module.exports = db;
-
-
-        function updateCart() {
-            const cartList = document.getElementById('cart-list');
-            cartList.innerHTML = '';
-            cart.forEach(item => {
-                const li = document.createElement('li');
-                li.textContent = `${item.name} - $${item.price}`;
-                cartList.appendChild(li);
-            });
-            document.getElementById('total-price').textContent = `Общая сумма: $${totalPrice}`;
+        function addToCart(itemName, price) {
+            // Здесь добавляем логику добавления товаров в корзину
         }
 
         function clearCart() {
-            cart = [];
-            totalPrice = 0;
-            updateCart();
+            // Логика для очистки корзины
         }
 
         function placeOrder() {
-            if (cart.length === 0) {
-                alert('Корзина пуста!');
-                return;
-            }
-            $('#orderConfirmationModal').modal('show');
-            clearCart();
+            // Логика для оформления заказа
         }
-
-
     </script>
 </body>
 </html>
