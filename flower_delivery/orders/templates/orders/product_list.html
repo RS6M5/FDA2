@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог цветов</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         .auth-links {
             position: absolute;
@@ -72,11 +73,11 @@
             </div>
         </div>
     </div>
-
     <div class="cart">
         <h2>Корзина</h2>
-        <p id="customer-name">
-            Имя клиента: <input type="text" id="customerNameInput" placeholder="Введите ваше имя">
+        <p id="customer-name-display">Имя клиента: <span id="displayed-customer-name"></span></p>
+        <p>
+            Имя клиента: <input type="text" id="customer-name-input" placeholder="Введите ваше имя">
             <button type="button" onclick="saveCustomerName()">Сохранить</button>
         </p>
         <ul id="cart-list">
@@ -87,39 +88,109 @@
         <button type="button" class="btn btn-info mt-2" onclick="placeOrder()">Оформить заказ</button>
     </div>
 
-    <script>
-        // Загружаем имя клиента из localStorage при загрузке страницы
-        window.onload = function() {
-            const storedName = localStorage.getItem('customerName');
-            if (storedName) {
-                document.getElementById('customerNameInput').value = storedName;
-                document.getElementById('customer-name').textContent = `Имя клиента: ${storedName}`;
-            }
-        };
+    <!-- Модальное окно регистрации -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Регистрация</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="username">Имя пользователя</label>
+                            <input type="text" class="form-control" id="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Электронная почта</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Пароль</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Номер телефона</label>
+                            <input type="tel" class="form-control" id="phone" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        function saveCustomerName() {
-            const nameInput = document.getElementById('customerNameInput');
-            const name = nameInput.value.trim(); // Получаем значение из поля ввода и удаляем пробелы
-            if (name) {
-                localStorage.setItem('customerName', name); // Сохраняем имя в localStorage
-                document.getElementById('customer-name').textContent = `Имя клиента: ${name}`;
-                nameInput.value = ''; // Очищаем поле ввода после сохранения
-            } else {
-                alert('Пожалуйста, введите ваше имя.');
-            }
+    <script>let cart = [];
+        let totalPrice = 0;
+
+        function addToCart(item, price) {
+            cart.push(item);
+            totalPrice += price;
+            updateCart();
         }
 
-        function addToCart(itemName, price) {
-            // Здесь добавляем логику добавления товаров в корзину
+        function updateCart() {
+            const cartList = document.getElementById('cart-list');
+            cartList.innerHTML = '';
+            cart.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                cartList.appendChild(li);
+            });
+            document.getElementById('total-price').textContent = 'Общая сумма: $' + totalPrice;
         }
 
         function clearCart() {
-            // Логика для очистки корзины
+            cart = [];
+            totalPrice = 0;
+            updateCart();
         }
 
         function placeOrder() {
-            // Логика для оформления заказа
+            alert('Заказ оформлен!');
+            clearCart();
         }
+
+        function saveCustomerName() {
+            const customerName = document.getElementById('customer-name-input').value;
+            localStorage.setItem('customerName', customerName);
+            displayCustomerName();
+        }
+
+        function displayCustomerName() {
+            const customerName = localStorage.getItem('customerName') || '';
+            document.getElementById('displayed-customer-name').textContent = customerName;
+        }
+
+        // Handle registration form submission
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const phone = document.getElementById('phone').value;
+
+            // For now, just log the user data
+            console.log('User registered:', { username, email, password, phone });
+
+            // Close the modal
+            $('#registerModal').modal('hide');
+
+            // Optionally, you could reset the form
+            this.reset();
+        });
+
+        // Load customer name on page load
+        window.onload = function() {
+            displayCustomerName();
+        };
     </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
