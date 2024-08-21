@@ -1,7 +1,7 @@
 import telebot, requests
 from telebot import types
 import json
-
+import os
 
 
 name = ''
@@ -42,10 +42,10 @@ def phone(message):
 def contact(message):
     if message.contact is not None:  # Если присланный объект <strong>contact</strong> не равен нулю
         phone2 = message.contact.phone_number
-        with open('C:\\Users\\Asus\\Downloads\\order.json') as json_file:
+        with open(os.environ['HOMEPATH'] + '\\Downloads\\order.json') as json_file:
             order_details = json.load(json_file)
 
-        with open('C:\\Users\\Asus\\Downloads\\user_data.json') as json_file2:
+        with open(os.environ['HOMEPATH'] + '\\Downloads\\user_data.json') as json_file2:
             user_info = json.load(json_file2)
 
     print(order_details)
